@@ -11,6 +11,10 @@ if (isGithubActions) {
   const repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, "")
   assetPrefix = `/${repo}/`
   basePath = `/${repo}`
+  imagesLoader = {
+    loader: "custom",
+    loaderFile: "./src/config/image-loader-github.tsx",
+  }
 }
 
 /** @type {import('next').NextConfig} */
