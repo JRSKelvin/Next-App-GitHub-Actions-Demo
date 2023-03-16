@@ -1,0 +1,50 @@
+name: Next App GitHub Actions Build And Deploy Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # https://docs.github.com/en/actions/quickstart
+  initial-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Command
+        run: |
+          echo "🎉 The Job Was Automatically Triggered By A ${{ github.event_name }} Event."
+          echo "🐧 This Job Is Now Running On A ${{ runner.os }} Server Hosted By GitHub!"
+          echo "🔎 The Name Of Your Branch Is ${{ github.ref }} And Your Repository Is ${{ github.repository }}."
+          echo "💡 The ${{ github.repository }} Repository Has Been Cloned To The Runner."
+          echo "🖥️ The Workflow Is Now Ready To Test Your Code On The Runner."
+          ls ${{ github.workspace }}
+          echo "🍏 This Job's Status Is ${{ job.status }}."
+
+  # https://github.com/ruanyf/github-actions-demo
+  # https://www.viget.com/articles/host-build-and-deploy-next-js-projects-on-github-pages
+  # https://www.bravolt.com/post/deploying-next-js-to-github-pages
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          npm run export
+          touch out/.nojekyll
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: out
